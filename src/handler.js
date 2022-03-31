@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 const { nanoid } = require('nanoid');
 const books = require('./books');
 
@@ -70,20 +69,28 @@ const addBooks = (request, h) => {
 // Menampilkan semua buku
 const getBooks = (request, h) => {
   const { name, reading, finished } = request.query;
+
   const filteredBooks = books.filter((book) => {
     if (name) {
       return book.name.toLowerCase().includes(name.toLowerCase());
     }
+
     if (reading) {
-      return book.reading == reading;
+      return book.reading === Boolean(parseInt(reading, 10));
     }
+
     if (finished) {
-      return book.finished == finished;
+      return book.finished === Boolean(parseInt(finished, 10));
     }
+
     return books;
   });
 
-  const showBooks = filteredBooks.map(({ id, name, publisher }) => ({ id, name, publisher }));
+  const showBooks = filteredBooks.map((book) => ({
+    id: book.id,
+    name: book.name,
+    publisher: book.publisher,
+  }));
 
   const response = h.response({
     status: 'success',
